@@ -71,6 +71,10 @@ The following fetches all products:
 ```swift
 let search = VCFProductSearch()
 
+// skip and limit are used for paging
+search.skip = 0
+search.limit = 1000
+
 search.executeOfflineProductSearch { results, err in
   if err != nil {
     //handle error
@@ -169,10 +173,41 @@ search.colorTerm = myColor
 
 ### Using search results
 
-Search results come back as arrays of objects that implement the ``
+Search results come back as arrays of objects w/ a `product` member that implements the `VCFProduct` interface.
+
+When displaying products in a UI, you will usually want to show a color / image and
+a few product details.
+
+The `VCFProduct` interface gives you access to the product's colors, images, attributes, and filters.
+
+Here is an example that configures a UITableViewCell to display a product:
 
 ```swift
+func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cell = tableView.dequeueReusableCell(withIdentifier: "basic-product-cell", for: indexPath) as! ProductTableViewCell
 
+    let sr = searchResults[indexPath.row]
+    if let product = sr.product {
+        cell.label1.text = product.code
+        cell.label2.text = product.name
+        cell.label3.text = String(format: "%@ - %@", product.vendor, product.collection)
+        cell.previewView.backgroundColor = product.displayColor
+
+        if let imageURL = product.images.first {
+            cell.previewView.kf.setImage(with: imageURL)
+        } else {
+            cell.previewView.image = nil
+        }
+    }
+
+    if let deltaE = sr.deltaE {
+        cell.label4.text = String(format: "%0.2f ∆E", deltaE.floatValue)
+    } else {
+        cell.label4.text = ""
+    }
+
+    return cell
+}
 ```
 
 ## Connecting to Color Muse
@@ -297,15 +332,21 @@ if let dev = VCFCentral.connectionManager.connectedDevice {
 ## Scanning
 
 ```swift
-if let dev = VCFCentral.connectionManager.connectedDevice {
-  dev.requestColorScan { scan, error in
+dev.requestColorScan { scan, err in
     guard err == nil else {
-      //handle error
-      return
+        return self.showScanError(err!)
     }
 
-    // do something with scan (e.g. search)
-  }
+    if let scan = scan {
+        self.view.backgroundColor = scan.displayColor
+        
+        let labColor = scan.adjustedLab
+        let rgbColor = scan.rgbColor
+        let lchColor = scan.lchColor
+        let hex = scan.hex
+      
+        // do something with colors...
+    }
 }
 ```
 
