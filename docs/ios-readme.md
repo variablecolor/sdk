@@ -54,13 +54,19 @@ The VariableSDK framework and required Realm framework can be copied from the de
 
 ## Changelog
 
+### v1.2.0
+
+* VCFProductSearch executeOfflineSearch function renamed to execute
+* VCFOfflineProduct renamed to VCFVariableCloudProduct
+
 ### v1.1.2
+
 * Adds color convenience methods on `VCFColorScan`
 
 ### v1.1.1
+
 * Adds paging (skip, limit) to `VCFProductSearch`
 * Adds `hasCalibration` property to `VCFColorimeter`
-
 
 ## Contributing
 

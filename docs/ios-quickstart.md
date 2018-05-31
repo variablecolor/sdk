@@ -75,7 +75,7 @@ let search = VCFProductSearch()
 search.skip = 0
 search.limit = 1000
 
-search.executeOfflineProductSearch { results, err in
+search.execute { results, err in
   if err != nil {
     //handle error
   }
@@ -94,7 +94,7 @@ For example:
 
 ```swift
 let search = VCFProductSearch()
-let filterset = VCFOfflineProductFilterSet(selectedFilters: [
+let filterset = VCFProductFilterSet(selectedFilters: [
   VCFProductKV(key: "vendor", val: "Behr"),
   VCFProductKV(key: "vendor", val: "Sherwin-Williams"),
 ])
@@ -108,12 +108,12 @@ As seen in the above example, filters are key-value pairs typically created usin
 
 This is typically done by fetching all available filters and then allowing the user to select some combination of these filters. This is shown in the demo app (see `FiltersViewController.swift`).
 
-Availble filters can be fetched using the `VCFOfflineProductFilterSet` class.
+Availble filters can be fetched using the `VCFProductFilterSet` class.
 
 For example:
 
 ```swift
-VCFOfflineProductFilterSet.filterSet() { filterSet, err in
+VCFProductFilterSet.filterSet() { filterSet, err in
   guard err == nil else {
     //handle error
     return
@@ -123,7 +123,7 @@ VCFOfflineProductFilterSet.filterSet() { filterSet, err in
 }
 ```
 
-The `VCFOfflineProductFilterSet` class provides several convenience methods for selecting & deselecting filters.
+The `VCFProductFilterSet` class provides several convenience methods for selecting & deselecting filters.
 Available filters are automatically updated when selecting / deselecting filters.
 
 ```swift
@@ -339,12 +339,12 @@ dev.requestColorScan { scan, err in
 
     if let scan = scan {
         self.view.backgroundColor = scan.displayColor
-        
+
         let labColor = scan.adjustedLab
         let rgbColor = scan.rgbColor
         let lchColor = scan.lchColor
         let hex = scan.hex
-      
+
         // do something with colors...
     }
 }
@@ -365,7 +365,7 @@ if let dev = VCFCentral.connectionManager.connectedDevice {
     let search = VCFProductSearch()
     search.colorTerm = scan!
 
-    search.executeOfflineProductSearch { results, err in
+    search.execute { results, err in
       guard err == nil else {
         //handle error
         return
