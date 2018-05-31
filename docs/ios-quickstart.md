@@ -88,7 +88,7 @@ Results are returned as an array of `VCFProductSearchResult` objects, which has 
 
 ### Filtering
 
-Products can be filtered by populating the `filterPredicate` property of a `VCFProductSearch` object.
+Products can be filtered by populating the `filters` property of a `VCFProductSearch` object.
 
 For example:
 
@@ -99,7 +99,7 @@ let filterset = VCFProductFilterSet(selectedFilters: [
   VCFProductKV(key: "vendor", val: "Sherwin-Williams"),
 ])
 
-search.filterPredicate = filterset.searchPredicate
+search.filters = filterset.selectedFilters
 
 //execute search
 ```

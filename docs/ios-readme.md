@@ -54,6 +54,11 @@ The VariableSDK framework and required Realm framework can be copied from the de
 
 ## Changelog
 
+### v1.3.0
+
+* `filterPredicate` property of `VCFProductSearch` removed. Replaced with `filters`.
+  Typically, you should use the `selectedFilters` property of a `VCFProductFilterSet` to populate this.
+
 ### v1.2.0
 
 * VCFProductSearch executeOfflineSearch function renamed to execute

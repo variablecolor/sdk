@@ -20,6 +20,11 @@ The downloads include the SDK along with source code demonstrating basic use.
 
 Documentation can be found in the source code of the SDKs.
 
+## Android
+
 * [Android readme](docs/android-readme.md)
+
+## iOS
+
 * [iOS readme](docs/ios-readme.md)
-* [iOS quickstart.md](docs/ios-quickstart.md)
+* [iOS quickstart](docs/ios-quickstart.md)
