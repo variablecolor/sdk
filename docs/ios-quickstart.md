@@ -71,7 +71,11 @@ The following fetches all products:
 ```swift
 let search = VCFProductSearch()
 
-search.executeOfflineProductSearch { results, err in
+// skip and limit are used for paging
+search.skip = 0
+search.limit = 1000
+
+search.execute { results, err in
   if err != nil {
     //handle error
   }
@@ -84,18 +88,18 @@ Results are returned as an array of `VCFProductSearchResult` objects, which has 
 
 ### Filtering
 
-Products can be filtered by populating the `filterPredicate` property of a `VCFProductSearch` object.
+Products can be filtered by populating the `filters` property of a `VCFProductSearch` object.
 
 For example:
 
 ```swift
 let search = VCFProductSearch()
-let filterset = VCFOfflineProductFilterSet(selectedFilters: [
+let filterset = VCFProductFilterSet(selectedFilters: [
   VCFProductKV(key: "vendor", val: "Behr"),
   VCFProductKV(key: "vendor", val: "Sherwin-Williams"),
 ])
 
-search.filterPredicate = filterset.searchPredicate
+search.filters = filterset.selectedFilters
 
 //execute search
 ```
@@ -104,12 +108,12 @@ As seen in the above example, filters are key-value pairs typically created usin
 
 This is typically done by fetching all available filters and then allowing the user to select some combination of these filters. This is shown in the demo app (see `FiltersViewController.swift`).
 
-Availble filters can be fetched using the `VCFOfflineProductFilterSet` class.
+Availble filters can be fetched using the `VCFProductFilterSet` class.
 
 For example:
 
 ```swift
-VCFOfflineProductFilterSet.filterSet() { filterSet, err in
+VCFProductFilterSet.filterSet() { filterSet, err in
   guard err == nil else {
     //handle error
     return
@@ -119,7 +123,7 @@ VCFOfflineProductFilterSet.filterSet() { filterSet, err in
 }
 ```
 
-The `VCFOfflineProductFilterSet` class provides several convenience methods for selecting & deselecting filters.
+The `VCFProductFilterSet` class provides several convenience methods for selecting & deselecting filters.
 Available filters are automatically updated when selecting / deselecting filters.
 
 ```swift
@@ -169,10 +173,41 @@ search.colorTerm = myColor
 
 ### Using search results
 
-Search results come back as arrays of objects that implement the ``
+Search results come back as arrays of objects w/ a `product` member that implements the `VCFProduct` interface.
+
+When displaying products in a UI, you will usually want to show a color / image and
+a few product details.
+
+The `VCFProduct` interface gives you access to the product's colors, images, attributes, and filters.
+
+Here is an example that configures a UITableViewCell to display a product:
 
 ```swift
+func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cell = tableView.dequeueReusableCell(withIdentifier: "basic-product-cell", for: indexPath) as! ProductTableViewCell
 
+    let sr = searchResults[indexPath.row]
+    if let product = sr.product {
+        cell.label1.text = product.code
+        cell.label2.text = product.name
+        cell.label3.text = String(format: "%@ - %@", product.vendor, product.collection)
+        cell.previewView.backgroundColor = product.displayColor
+
+        if let imageURL = product.images.first {
+            cell.previewView.kf.setImage(with: imageURL)
+        } else {
+            cell.previewView.image = nil
+        }
+    }
+
+    if let deltaE = sr.deltaE {
+        cell.label4.text = String(format: "%0.2f ∆E", deltaE.floatValue)
+    } else {
+        cell.label4.text = ""
+    }
+
+    return cell
+}
 ```
 
 ## Connecting to Color Muse
@@ -297,15 +332,21 @@ if let dev = VCFCentral.connectionManager.connectedDevice {
 ## Scanning
 
 ```swift
-if let dev = VCFCentral.connectionManager.connectedDevice {
-  dev.requestColorScan { scan, error in
+dev.requestColorScan { scan, err in
     guard err == nil else {
-      //handle error
-      return
+        return self.showScanError(err!)
     }
 
-    // do something with scan (e.g. search)
-  }
+    if let scan = scan {
+        self.view.backgroundColor = scan.displayColor
+
+        let labColor = scan.adjustedLab
+        let rgbColor = scan.rgbColor
+        let lchColor = scan.lchColor
+        let hex = scan.hex
+
+        // do something with colors...
+    }
 }
 ```
 
@@ -324,7 +365,7 @@ if let dev = VCFCentral.connectionManager.connectedDevice {
     let search = VCFProductSearch()
     search.colorTerm = scan!
 
-    search.executeOfflineProductSearch { results, err in
+    search.execute { results, err in
       guard err == nil else {
         //handle error
         return

@@ -52,6 +52,27 @@ _As Apple stopped supporting simulator+Bluetooth Low Energy support, you must us
 
 The VariableSDK framework and required Realm framework can be copied from the demo project into yoru own project
 
+## Changelog
+
+### v1.3.0
+
+* `filterPredicate` property of `VCFProductSearch` removed. Replaced with `filters`.
+  Typically, you should use the `selectedFilters` property of a `VCFProductFilterSet` to populate this.
+
+### v1.2.0
+
+* VCFProductSearch executeOfflineSearch function renamed to execute
+* VCFOfflineProduct renamed to VCFVariableCloudProduct
+
+### v1.1.2
+
+* Adds color convenience methods on `VCFColorScan`
+
+### v1.1.1
+
+* Adds paging (skip, limit) to `VCFProductSearch`
+* Adds `hasCalibration` property to `VCFColorimeter`
+
 ## Contributing
 
 When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
