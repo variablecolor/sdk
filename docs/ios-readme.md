@@ -54,6 +54,11 @@ The VariableSDK framework and required Realm framework can be copied from the de
 
 ## Changelog
 
+### v1.4.0
+
+* Product download code improved (reduced memory use)
+* Improved filter set functionality
+
 ### v1.3.0
 
 * `filterPredicate` property of `VCFProductSearch` removed. Replaced with `filters`.
