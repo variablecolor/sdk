@@ -18,11 +18,6 @@ The sdk is broken into to major parts:
 - Using the ProductSearch class to construct searches
 
 
-
-## Getting Started
-[View QuickStart](quickstart.md)
-
-
 ##### Installing
 * Clone in this repository, download the source to a machine, or checkout using Android Studio 3.2 or later.
 ```
