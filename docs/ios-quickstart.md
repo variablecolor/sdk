@@ -46,7 +46,7 @@ func productDownloaderDidFailWithError(_ error: Error!) {
 }
 ```
 
-You can check if products need to be redownloaded (e.g. in the case they have been updated remotely) using:
+You can check if products need to be downloaded again (e.g. in the case they have been updated remotely) using:
 
 ```swift
 VCFCentral.productManager.checkIfProductDownloadRequired { isRequired, err in
@@ -54,7 +54,7 @@ VCFCentral.productManager.checkIfProductDownloadRequired { isRequired, err in
     //handle error
   } else {
     if isRequired {
-      //products need to be redownloaded
+      //products need to be fetched
     } else {
       //products are up to date
     }
@@ -108,13 +108,13 @@ As seen in the above example, filters are key-value pairs typically created usin
 
 This is typically done by fetching all available filters and then allowing the user to select some combination of these filters. This is shown in the demo app (see `FiltersViewController.swift`).
 
-Availble filters can be fetched using the `VCFProductFilterSet` class.
+Available filters can be fetched using the `VCFProductSearch` class.
 
 For example:
 
 ```swift
-VCFProductFilterSet.filterSet() { filterSet, err in
-  guard err == nil else {
+VCFProductSearch.fetchProductFilters { filters, _ in
+   guard err == nil else {
     //handle error
     return
   }
@@ -331,22 +331,39 @@ if let dev = VCFCentral.connectionManager.connectedDevice {
 
 ## Scanning
 
+Call `requestColorScan` on the `VCFColorimeter` class to request a color scan.
+Values can be retrieved in a variety of formats.
+
 ```swift
 dev.requestColorScan { scan, err in
-    guard err == nil else {
-        return self.showScanError(err!)
-    }
+  guard err == nil else {
+      return self.showScanError(err!)
+  }
 
-    if let scan = scan {
-        self.view.backgroundColor = scan.displayColor
+  if let scan = scan {
+    self.view.backgroundColor = scan.displayColor
 
-        let labColor = scan.adjustedLab
-        let rgbColor = scan.rgbColor
-        let lchColor = scan.lchColor
-        let hex = scan.hex
+    // Lab color - 10 deg. observer, D50 illuminant
+    let d50Lab10Deg = scan.adjusted10DegreeLab
 
-        // do something with colors...
-    }
+    // Lab color - 10 deg. observer, D65 illuminant
+    let d65Lab10Deg = d50Lab10Deg.toLab(with: .D65)
+
+    // Lab color - 2 deg. observer, D50 illuminant
+    let d50Lab2Deg = scan.adjusted2DegreeLab
+
+    // Lab color - 2 deg. observer, D65 illuminant
+    let d65Lab2Deg = d50Lab2Deg.toLab(with: .D65)
+
+    // RGB color
+    let rgbColor = scan.rgbColor
+
+    // hex color
+    let hex = scan.hex
+
+    // LCH color
+    let lchColor = scan.lchColor
+  }
 }
 ```
 
