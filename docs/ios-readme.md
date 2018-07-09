@@ -54,6 +54,14 @@ The VariableSDK framework and required Realm framework can be copied from the de
 
 ## Changelog
 
+### v1.6.3
+
+- added method on `VCFProductSearch` that allows checking for access to Inspirations
+
+### v1.6.2
+
+- product database fixed to support multiple subscriptions / themes
+
 ### v1.6.0
 
 - load method on `VCFProductFilterSet` has been deprecated. Please use `fetchProductFilters` or `fetchInspirationFilters` from `VCFProductSearch`.
