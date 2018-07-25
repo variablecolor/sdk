@@ -44,8 +44,14 @@ Inside of your project, add our public repository to your build's repositories.
 Now, add the `variable-color-framework` dependency to your project.
 ```gradle
 dependency {
-    implementation 'com.variable:variable-color-framework:0.4.5'
+    implementation 'com.variable:variable-color-framework:0.4.6'
 }
 ```
 
+
+
+
+#### Release Notes
+
+if upgrading to 0.4.6 --> a reinstallation may be required when experiencing errors from realm.
 
