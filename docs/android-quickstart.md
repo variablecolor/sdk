@@ -113,6 +113,29 @@ searchFilterSet.initialize(listener);
 
 ```
 
+#### Inspiration Filters
+When available, the optional `isInspiration` flag can be set on SearchFilterSet.
+```java
+OnSearchFilterFetchListener listener = new OnSearchFilterFetchListener() {
+
+        @UiThread
+        @Override
+        public void onFilterFetch(@Nullable SearchFilterSet filters) {
+            // demonstrates how to add a filter.
+            // listener.add("vendor", "Houzz", myAddListener);
+
+            // demonstrates how to remove a filter.
+            //listener.remove("vendor", "Houzz", onItemrRemovedAndUpdatedListener);
+
+            Collection<SearchFilter> availableFilters = filters.getAvailableFilters();
+            Collection<SearchFilter> searchFilters = filters.getSelectedFilters();
+        }
+};
+
+SearchFilterSet searchFilterSet = new SearchFilterSet().isInspirationsFilterSet(true)
+searchFilterSet.initialize(listener);
+```
+
 
 #### Sorting
 All non color product searches can be sorted by a set of sortable keys. Valid keys are found at (ProductSearch.allSortKeys).

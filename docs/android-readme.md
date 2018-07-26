@@ -44,7 +44,7 @@ Inside of your project, add our public repository to your build's repositories.
 Now, add the `variable-color-framework` dependency to your project.
 ```gradle
 dependency {
-    implementation 'com.variable:variable-color-framework:0.4.6'
+    implementation 'com.variable:variable-color-framework:0.4.7'
 }
 ```
 
