@@ -55,3 +55,7 @@ dependency {
 
 if upgrading to 0.4.6 --> a reinstallation may be required when experiencing errors from realm.
 
+
+##### Upgrading to 0.5.0
+* Speed and memory improvements to the download process. (it is preferred to clear out app data, but sdk supports upgrade).
+* Speed improvements to the filter selection / deselection
