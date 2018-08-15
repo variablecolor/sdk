@@ -47,12 +47,18 @@ _As Apple stopped supporting simulator+Bluetooth Low Energy support, you must us
 
 - [Realm](https://realm.io/docs/objc/latest/) - Required by Variable SDK for storing internal data.
 - [Kingfisher](https://github.com/onevcat/Kingfisher) - Used for image caching in the demo project (not required by SDK).
+- [ZipArchive](https://github.com/ZipArchive/ZipArchive) - Used for zip file manipulation
 
 ## Integrating with your own app
 
 The VariableSDK framework and required Realm framework can be copied from the demo project into yoru own project
 
 ## Changelog
+
+### v2.0.0
+
+- product download speed has been greatly reduced; as a side effect, the underlying database and product models have been slightly altered; product images are now represented using a class rather than just a list of URLs
+- any existing product database
 
 ### v1.6.3
 
