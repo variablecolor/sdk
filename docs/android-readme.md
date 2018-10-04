@@ -44,7 +44,7 @@ Inside of your project, add our public repository to your build's repositories.
 Now, add the `variable-color-framework` dependency to your project.
 ```gradle
 dependency {
-    implementation 'com.variable:variable-color-framework:0.4.7'
+    implementation 'com.variable:variable-color-framework:0.9.1'
 }
 ```
 
@@ -59,3 +59,18 @@ if upgrading to 0.4.6 --> a reinstallation may be required when experiencing err
 ##### Upgrading to 0.5.0
 * Speed and memory improvements to the download process. (it is preferred to clear out app data, but sdk supports upgrade).
 * Speed improvements to the filter selection / deselection
+
+##### Upgrading to 0.9.1
+ ***This is a minimum version to work with variable's product search***
+
+* Deprecated import / export of product database in favor of performance increases with structure changes.
+* Adds new features to search engine
+   * Target Illuminant and Observer for new hardware only ( Defaults to D50 / 2° )
+   * set the type of ∆E to perform (Defaults to CIE ∆E 200)
+   * set the maximum acceptable ∆E between color results. (Defaults to 12.5)
+
+  BREAKING CHANGES
+  * Reinstallation is required, but is now stable and will be continously supported moving forward.
+  * Colorimeter renamed to ColorInstrument
+  * onSpectrumCapture method is added to OnColorCaptureListener for new hardware
+  * Altered `getBatchedLabColors` to accept target illuminant and observer that are specified in ProductSearch
