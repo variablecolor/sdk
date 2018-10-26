@@ -214,10 +214,13 @@ func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> U
 
 ## Inspirations
 
-Browsing inspirations is nearly identical to browsing products. NOTE: all inspiration searches are performed online and thus a network connection is required.
+**NOTE**: all inspiration searches are performed online and thus a network connection is required.
 
-To do an inspiration search, use `VCFProductSearch.inspirations()` to instantiate the
-VCFProductSearch class (rather than `VCFProductSearch()`).
+Browsing & searching inspirations is nearly identical to browsing & searching with products.
+The only differences are how you instantiate the search class and how you fetch the initial filter set.
+
+To do an inspirations search, use `VCFProductSearch.inspirations()` to instantiate the
+VCFProductSearch class (rather than `VCFProductSearch()` as you would for products).
 
 For example:
 
@@ -233,7 +236,8 @@ search.execute { results, err in
 }
 ```
 
-If you want to filter inspirations (e.g. by room) do it the same way you would for products, but load the filters using
+If you want to filter inspirations (e.g. by room) do it the same way you would for products,
+but load the initial filter set using
 `VCFProductSearch.fetchInspirationFilters()`
 
 For example:
