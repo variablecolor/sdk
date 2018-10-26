@@ -55,6 +55,15 @@ The VariableSDK framework and required Realm framework can be copied from the de
 
 ## Changelog
 
+### v2.1.0
+
+- inspirations are now online only
+- requestColorScan callback has changed (an additional parameter was added for spectro scans)
+
+### v2.0.2
+
+- bug fixes for text search
+
 ### v2.0.0
 
 - product download speed has been greatly reduced; as a side effect, the underlying database and product models have been slightly altered; product images are now represented using a class rather than just a list of URLs

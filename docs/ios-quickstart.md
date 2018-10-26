@@ -23,6 +23,8 @@ func onInit(_ err: Error?) {
 ## Downloading Products
 
 Before products can be used (searched / browsed), they must be downloaded and saved locally.
+NOTE: Inspirations are not included in the products download. Inspirations will only operate online.
+If you ONLY want to use inspirations, you can skip downloading the products.
 
 To download products, call this function and pass an instance of `VCFProductDownloaderDelegate`.
 
@@ -210,6 +212,39 @@ func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> U
 }
 ```
 
+## Inspirations
+
+Browsing inspirations is nearly identical to browsing products. NOTE: all inspiration searches are performed online and thus a network connection is required.
+
+To do an inspiration search, use `VCFProductSearch.inspirations()` to instantiate the
+VCFProductSearch class (rather than `VCFProductSearch()`).
+
+For example:
+
+```swift
+let search = VCFProductSearch.inspirations()
+search.execute { results, err in
+  guard err == nil else {
+    return
+  }
+
+  self.searchResults = results
+  self.productsTable.reloadData()
+}
+```
+
+If you want to filter inspirations (e.g. by room) do it the same way you would for products, but load the filters using
+`VCFProductSearch.fetchInspirationFilters()`
+
+For example:
+
+```swift
+VCFProductSearch.fetchInspirationFilters { filters, _ in
+  self.filters = filters
+  self.filtersTableView.reloadData()
+}
+```
+
 ## Connecting to Color Muse
 
 In order to scan colors, you need to establish a BLE connection to a Color Muse device.
@@ -331,11 +366,11 @@ if let dev = VCFCentral.connectionManager.connectedDevice {
 
 ## Scanning
 
-Call `requestColorScan` on the `VCFColorimeter` class to request a color scan.
+Call `requestColorScan` on the `VCFColorInstrument` class to request a color scan.
 Values can be retrieved in a variety of formats.
 
 ```swift
-dev.requestColorScan { scan, err in
+ dev.requestColorScan { scan, _, err in
   guard err == nil else {
       return self.showScanError(err!)
   }
@@ -344,16 +379,16 @@ dev.requestColorScan { scan, err in
     self.view.backgroundColor = scan.displayColor
 
     // Lab color - 10 deg. observer, D50 illuminant
-    let d50Lab10Deg = scan.adjusted10DegreeLab
+    let d50Lab10Deg = scan.lab(.tenDeg, illum: .D50)
 
     // Lab color - 10 deg. observer, D65 illuminant
-    let d65Lab10Deg = d50Lab10Deg.toLab(with: .D65)
+    let d65Lab10Deg = scan.lab(.tenDeg, illum: .D65)
 
     // Lab color - 2 deg. observer, D50 illuminant
-    let d50Lab2Deg = scan.adjusted2DegreeLab
+    let d50Lab2Deg = scan.lab(.twoDeg, illum: .D50)
 
     // Lab color - 2 deg. observer, D65 illuminant
-    let d65Lab2Deg = d50Lab2Deg.toLab(with: .D65)
+    let d65Lab2Deg = scan.lab(.twoDeg, illum: .D65)
 
     // RGB color
     let rgbColor = scan.rgbColor
