@@ -3,15 +3,15 @@ This demo project shows basic usage of the VariableSDK framework.
 The sdk is broken into to major parts:
 
 ##### *Bluetooth Functionality*
-- Various means of Bluetooth connection to a ColorMuse (or other Variable Colorimeter device).
-- Requesting color scans and calibration from a connected Colorimeter
-- Using the ConnectionManager and Colorimeter classes
+- Various means of Bluetooth connection to a ColorInstrument (aka ColorMuse or other Variable color device).
+- Requesting color scans and calibration from a connected ColorInstrument
+- Using the ConnectionManager and ColorInstrument classes
 
 ##### *Product Searching*
 - Download "Products" with progress updates
 - Checking for new product content
 - Filter products by various key /value pairs (categories/brands/etc)
-- Search products by color from a Color Muse device scan
+- Search products by color from a ColorInstrument device scan
 - Search products by code/text
 - Cross reference products
 - Browsing products
