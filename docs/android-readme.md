@@ -21,7 +21,7 @@ The sdk is broken into to major parts:
 ##### Installing
 * Clone in this repository, download the source to a machine, or checkout using Android Studio 3.2 or later.
 ```
-git clone git@bitbucket.org:variablecolor/android-sdk-examples.git
+git clone git@bitbucket.org:variablecolor/android-variable-color-sdk-examples.git
 ```
 
 * When importing into android studio, ensure that you 'Import project from external model` is selected with `Gradle`.
