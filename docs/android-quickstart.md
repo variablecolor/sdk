@@ -59,7 +59,7 @@ You can check if products need to be redownloaded (e.g. in the case they have be
 
 ### Browsing & searching products
 The following can fetch the first 25 products using `ProductSearch` with limit and skip:
-```
+```java
  new ProductSearch()
     .setSkip(0)
     .setLimit(25)
@@ -140,7 +140,7 @@ searchFilterSet.initialize(listener);
 #### Sorting
 All non color product searches can be sorted by a set of sortable keys. Valid keys are found at (ProductSearch.allSortKeys).
 Sort keys have importance. This importance is placed on the insertion order while using a LinkedHashMap.
-```
+```java
 Map<String, Boolean> sorts = new LinkedHashMap<>();
 
 // sort by name in ascending order first
@@ -174,26 +174,26 @@ new ProductSearch()
 ```
 
 
-### Connecting To Color Muse
-In order to scan colors, you need to establish a BLE connection to a Color Muse device. A network is required to download device-specific information from our servers the first time you connect to a given Color Muse device.
+### Connecting To A Color Instrument (Color Muse or Spectro 1)
+In order to scan colors, you need to establish a BLE connection to a Color Instrument. A network connection is required to download device-specific information from our servers the first time you connect to a given instrument (aka Color Muse or Spectro1 device).
 
-There are two primary ways to connect: multi connect and direct connect.
+The connection logic is broken down into: 
+-  Settings up listeners
+-  Bluetooth discovery
+-  Connection
+-  Calibration
 
-Multi connect scans for Color Muses in the vicinity, connects to each one, then waits for the user to confirm their device via hardware button press (on the Color Muse).
+#### Using Connection Listeners
+In order to have feedback during the connection flow, implement the methods for the `OnDiscoveryListener`,  `DeviceConnectionListener` and the `onErrorListener`:
 
-Direct connect connects to a single Color Muse device. The device can be chosen from a list by the user after scanning, or could be a previously known, connected device.
+```java
+//Implements OnDiscoveryListener
+    public void onDiscoveryComplete(@NonNull List<BluetoothDevice> devices) {
+        if (devices.size() == 0) {
+            txtStatus.setText("No Devices Found");
+        }
+    }
 
-
-#### Using Multi Connect
-Multi connect is the preferred way to get a user connected to their Color Muse.
-
-Start multi connect by calling multiConnectStart and passing it a DeviceConnectionListener and onErrorListener.
-```
-// Start a multiConnect attempt.
-sdk.getConnectionManager().multiConnectStart(this, this);
-```
-You will neeed to implement two methods for the DeviceConnectionListener and the onErrorListener:
-```
 //Implements DeviceConnectionListener
 
 @Override
@@ -273,55 +273,98 @@ public void onError(@NonNull VariableException ex) {
 ```
 Your implementation should update the UI as it receives these events. See the demo project for more details.
 
-Once the connection manager reaches the .DeviceReady state, the device can be calibrated and then can be used to scan colors.
+Once the connection manager reaches the `.DeviceReady` state, the device can be calibrated and then can be used to scan colors.
 
-#### Using Direct Connect
-Before connecting, you need to scan for BLE devices:
-```
-// This will cancel any existing multi connection attempt in progress. Accepts a onDiscoveryListener and a onErrorListener.
+
+
+#### Bluetooth Discovery
+
+Before connecting, you need to scan for BLE devices and decide what to connect to. To scan for advertising devices, implement the `OnDiscoveryListener` listener as noted above, and then start discovery using:
+```java
+// This will cancel any existing connection attempt in progress. Accepts a onDiscoveryListener and a onErrorListener.
 sdk.getConnectionManager().discoverBluetoothDevices(this, this);
 ```
 
-This will set the onDiscoveryListener on connectionManager.
+In the `OnDiscoveryListener`'s `onDiscoveryComplete` callback, you will get a list of devices you can sort through and display to the user. 
+
+Devices advertise in one of two modes ( **Single Click** or **Double Click** Advertising).
+
+- Color Muse only has regular (**Single Click**) advertising mode: click the button on the Color Muse device and it will advertise for 45 seconds. 
+- The Spectro 1 device has (in addition to regular) a "double click" advertising mode, so during discovery we can scan for just devices that have been double clicked to avoid discovering extra devices.
+
+To check for devices with **Double Click** Advertising: 
+```java
+@Override
+    public void onDiscoveryComplete(@NonNull List<BluetoothDevice> devices) {
+        for (BluetoothDevice d : devices) {
+            boolean isDoubleClick;
+            boolean isSingleClick;
+            BlueGeckoController controller = Variable.instance().getConnectionManager().getBluetoothLEService().getBleDevice(d);
+            if(controller.getAdvertisingData() != null) {
+                isDoubleClick = controller.getAdvertisingData().isDoubleButtonPressAdvertising()
+                isSingleClick = controller.getAdvertisingData().isSingleButtonPressAdvertising()
+            }
+    }
+```
+
+This will set the `onDiscoveryListener` on `connectionManager`.
 You would typically display the list of peripherals to the user and allow them to select a device to connect to.
+
+
+
+#### Bluetooth Connection
 Once the user has selected the device to connect to, we call:
 ```
  sdk.getConnectionManager().connect(device, this, this);
 
 ```
-The connect method accepts the BluetoothDevice to connect to, an DeviceConnectionListener, and an onErrorListener. The two later are the same used for multi connect.
+The connect method accepts the `BluetoothDevice` to connect to, an `DeviceConnectionListener`, and an `onErrorListener`.
+Once this is completed, your `DeviceConnectionListener` will recieve the `.Ready` state change, and will be ready to scan colors.
 
-Once this is completed, your DeviceConnectionListener will recieve the .Ready state change, and will be ready to scan colors.
 
 ### Calibration
-Before scanning, the device needs to be calibrated:
+Color Muse and Spectro 1 have different calibration flows. 
 
-```
-Colorimeter peripheral = this.connectionManager.getConnectedPeripheral();
+Color Muse requires calibration before scanning, but the Spectro 1 device only needs to be calibrated once every 500~100 scans. 
+
+```java
+ColorInstrument peripheral = this.connectionManager.getConnectedPeripheral();
 //Ensure peripheral is connected.
 if(peripheral != null){
     peripheral.requestCalibration(ColorimeterFragment.this::onCalibrationResult);
 }
 ```
 
+In the case that a Spectro 1 requires calibration, calibration can be performed by scanning the white, green, and blue tiles shipped with the Spectro using the standard color scan methods (described below) and then storing those to the device using the `setCalibration` method:
+```java
+    getColorInstrument().setCalibrationScans(
+        Arrays.asList(this.whiteTileScan, this.greenTileScan, this.blueTileScan),
+        (peripheral, isSuccess) -> {
+            Toast.makeText(CalibrationActivity.this, "Calibration Success", Toast.LENGTH_SHORT).show();
+            clearTileScans();
+
+        }, this::handleScanError);
+
+```
+See the demo app for further details. 
+
 ### Scanning
-In order to scan, you will need to implement an onColorCaptureListener and an onErrorListener. These are accepted by Colorimeter.requestColorScan.
+In order to scan, you will need to implement an `onColorCaptureListener` and an `onErrorListener`. These are accepted by `ColorInstrument.requestColorScan`.
 
 To request a scan:
-
-```
+```java
 // Get the colorimeter... null is no connection... possibly remote disconnection if keep alive is off.
-Colorimeter colorimeter = ((SampleApplication) getApplication()).getVariableSDK().getConnectionManager().getConnectedPeripheral();
+ColorInstrument device = ((SampleApplication) getApplication()).getVariableSDK().getConnectionManager().getConnectedPeripheral();
 
-colorimeter.requestColorScan(ColorScanningActivity.this, this);
+device.requestColorScan(ColorScanningActivity.this, this);
 ```
 
-The onColorCaptureListener is called when the scan is completed.
+The `onColorCaptureListener` is called when the scan is completed with the appropriate method: `onColorCapture` (from Color Muse) or `onSpectrumCapture` (from Spectro 1).
 
-Using the onColorCaptureListener implementation, the device and the ColorScan is passed back. The adjustedLabColor should be used for display values.
-```
+Using the `onColorCaptureListener` implementation, the device and the ColorScan is passed back. The adjustedLabColor should be used for display values.
+```java
 @Override
-public void onColorCapture(@NonNull Colorimeter colorimeter, @NonNull ColorScan scan) {
+public void onColorCapture(@NonNull ColorInstrument colorInstrument, @NonNull ColorScan scan) {
     // Use the ColorScan and get D50 2°
     LabColor color = scan.getAdjustedLabColor(Illuminants.D50, Observer.TWO_DEGREE);
 
@@ -334,14 +377,20 @@ public void onColorCapture(@NonNull Colorimeter colorimeter, @NonNull ColorScan 
     // Use the ColorScan and get D50 10°
     LabColor d50_10 = scan.getAdjustedLabColor(Illuminants.D65, Observer.TEN_DEGREE);
 }
+
+@Override
+public void onSpectrumCapture(@NonNull ColorInstrument colorInstrument, @NonNull ColorScan scan) {
+    LabColor color = scan.getAdjustedLabColor(mSelectedIlluminant, mSelectedObserver);
+    List<SpectralPoint> intensities = scan.getSpectralCurve();
+}
 ```
 
 
 ### Scanning and Searching
 Shown in the section above, implement the onColorCaptureListener to make a search using the ColorScan.
-```
+```java
 @Override
-public void onColorCapture(@NonNull Colorimeter colorimeter, @NonNull ColorScan scan) {
+public void onColorCapture(@NonNull ColorInstrument colorInstrument, @NonNull ColorScan scan) {
     new ProductSearch()
         .setColorSearchTerm(scan)
         .setSkip(0)
