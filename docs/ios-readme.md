@@ -4,10 +4,10 @@ This demo project demonstrates basic use of the Variable Color framework.
 
 The demo shows how to:
 
-- Connect to a ColorMuse (or other Variable Colorimeter device) to make color scans.
+- Connect to a `ColorInstrument` (ie: a ColorMuse or Spectro 1 device) to make color scans.
 - Download "Products" ie various searchable color content like paint swatches accessable by the SDK key in use
 - Filter products by various categories/brands/etc
-- Search products by color from a Color Muse device scan
+- Search products by color from a `ColorInstrument` device scan
 - Search products by code/text
 
 ## Getting Started
@@ -21,8 +21,8 @@ If you don't have an SDK key, contact Variable, Inc - or your company's account 
 
 ### Installing
 
-Clone the variable-color-demo project from bitbucket via:  
-`git clone git@bitbucket.org:variablecolor/variable-color-framework-demo.git`
+Download and extract the variable-color-demo project from bitbucket via the [iOS download link](https://bitbucket.org/variablecolor/sdk/raw/master/downloads/variable-color-ios-latest.zip) on the [Variable Color SDK site](https://bitbucket.org/variablecolor/sdk).
+
 
 ### Testing & Running the Demo App
 
@@ -46,14 +46,38 @@ _As Apple stopped supporting simulator+Bluetooth Low Energy support, you must us
 ## Built With
 
 - [Realm](https://realm.io/docs/objc/latest/) - Required by Variable SDK for storing internal data.
-- [Kingfisher](https://github.com/onevcat/Kingfisher) - Used for image caching in the demo project (not required by SDK).
 - [ZipArchive](https://github.com/ZipArchive/ZipArchive) - Used for zip file manipulation
+- [Kingfisher](https://github.com/onevcat/Kingfisher) - Used for image caching in the demo project (not required by SDK. Added to the demo using [Carthage](https://github.com/Carthage/Carthage)).
+- [ScrollableGraphView](https://github.com/philackm/ScrollableGraphView) - Used for spectral graphs in the demo project (not required by SDK. Added to the demo using [Carthage](https://github.com/Carthage/Carthage)).
 
 ## Integrating with your own app
 
 The VariableSDK framework and required Realm framework can be copied from the demo project into yoru own project
 
 ## Changelog
+
+### v8.0.9
+
+- versioning updated to line up with external apps
+- requestColorScan callback reverted to single ColorScan response
+- connection logic simplified to just direct connect
+- Calibration for Color Muse requires 1 scan of the calibration cap. 
+- Calibration for Spectro 1 requires scanning the 3 tiles provided with Spectro 1 (white, green, & blue)
+- Calibration related SDK interface changed to be more flexible:
+  - Use 
+        ```
+        dev.requestCalibrationScan { (calScan:VCFColorScan?, error:Error?) in })
+        ```
+to perform a calibration scan, and then 
+  - Use
+        ```
+        dev.setCalibration(calScanArray, complete: { (error:Error?) in })
+        ```  to set the calibration on the device.
+
+### v2.1.1
+
+- inspirations are now online only
+- requestColorScan callback has changed (an additional parameter was added for spectro scans)
 
 ### v2.1.0
 
