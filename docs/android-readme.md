@@ -44,7 +44,7 @@ Inside of your project, add our public repository to your build's repositories.
 Now, add the `variable-color-framework` dependency to your project.
 ```gradle
 dependency {
-    implementation 'com.variable:variable-color-framework:0.9.1'
+    implementation 'com.variable:variable-color-framework:1.1.0'
 }
 ```
 
@@ -52,6 +52,10 @@ dependency {
 
 
 #### Release Notes
+
+#### 1.1.0 
+ - Critical bug fixed with color muse calibration failing.
+ 
 
 if upgrading to 0.4.6 --> a reinstallation may be required when experiencing errors from realm.
 
