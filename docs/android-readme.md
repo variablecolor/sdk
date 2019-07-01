@@ -3,15 +3,15 @@ This demo project shows basic usage of the VariableSDK framework.
 The sdk is broken into to major parts:
 
 ##### *Bluetooth Functionality*
-- Various means of Bluetooth connection to a ColorMuse (or other Variable Colorimeter device).
-- Requesting color scans and calibration from a connected Colorimeter
-- Using the ConnectionManager and Colorimeter classes
+- Various means of Bluetooth connection to a ColorInstrument (aka ColorMuse, Spectro1, etc).
+- Requesting color scans and calibration from a connected ColorInstrument
+- Using the ConnectionManager and ColorInstrument classes
 
 ##### *Product Searching*
 - Download "Products" with progress updates
 - Checking for new product content
 - Filter products by various key /value pairs (categories/brands/etc)
-- Search products by color from a Color Muse device scan
+- Search products by color from a ColorInstrument device scan
 - Search products by code/text
 - Cross reference products
 - Browsing products
@@ -21,7 +21,7 @@ The sdk is broken into to major parts:
 ##### Installing
 * Clone in this repository, download the source to a machine, or checkout using Android Studio 3.2 or later.
 ```
-git clone git@bitbucket.org:variablecolor/android-sdk-examples.git
+git clone git@bitbucket.org:variablecolor/android-variable-color-sdk-examples.git
 ```
 
 * When importing into android studio, ensure that you 'Import project from external model` is selected with `Gradle`.
@@ -44,7 +44,7 @@ Inside of your project, add our public repository to your build's repositories.
 Now, add the `variable-color-framework` dependency to your project.
 ```gradle
 dependency {
-    implementation 'com.variable:variable-color-framework:0.9.1'
+    implementation 'com.variable:variable-color-framework:1.1.0'
 }
 ```
 
@@ -52,6 +52,10 @@ dependency {
 
 
 #### Release Notes
+
+#### 1.1.0 
+ - Critical bug fixed with color muse calibration failing.
+ 
 
 if upgrading to 0.4.6 --> a reinstallation may be required when experiencing errors from realm.
 

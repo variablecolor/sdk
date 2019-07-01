@@ -177,108 +177,13 @@ new ProductSearch()
 ### Connecting To Color Muse
 In order to scan colors, you need to establish a BLE connection to a Color Muse device. A network is required to download device-specific information from our servers the first time you connect to a given Color Muse device.
 
-There are two primary ways to connect: multi connect and direct connect.
 
-Multi connect scans for Color Muses in the vicinity, connects to each one, then waits for the user to confirm their device via hardware button press (on the Color Muse).
+#### Direct Connect
+Direct connect establishes communication to a single Color Muse device. The device can be chosen from a list by the user after scanning, or could be a previously known, connected device.
 
-Direct connect connects to a single Color Muse device. The device can be chosen from a list by the user after scanning, or could be a previously known, connected device.
-
-
-#### Using Multi Connect
-Multi connect is the preferred way to get a user connected to their Color Muse.
-
-Start multi connect by calling multiConnectStart and passing it a DeviceConnectionListener and onErrorListener.
-```
-// Start a multiConnect attempt.
-sdk.getConnectionManager().multiConnectStart(this, this);
-```
-You will neeed to implement two methods for the DeviceConnectionListener and the onErrorListener:
-```
-//Implements DeviceConnectionListener
-
-@Override
-public void onStateChange(int previousState, int newState) {
-    switch (newState) {
-        case States.DISCONNECTED:
-            txtStatus.setText("Scanning");
-            break;
-
-        case States.DEVICE_CONNECTION:
-            txtStatus.setText("Connecting to discovered devices");
-            txtAction.setText("-");
-            break;
-
-        case States.AWAITING_CONFIRMATION:
-            txtStatus.setText("Device connected");
-            txtAction.setText("press button on color sensor for confirmation");
-            break;
-
-        case States.DEVICE_DISCOVERY:
-            txtStatus.setText("Discovering nearby devices");
-            txtAction.setText("Press button on color sensor");
-            break;
-
-        case States.FETCHING_CALIBRATION:
-            txtStatus.setText("Fetching device calibration...\nPlease wait");
-            txtAction.setText("-");
-            break;
-    }
-}
-
-//Implements onErrorListener
-@Override
-public void onError(@NonNull VariableException ex) {
-    if(ex instanceof NetworkException){
-        new AlertDialog.Builder(this)
-                .setTitle("Internet Connectivity")
-                .setMessage("Failed to download device information on first time connection")
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-        txtStatus.setText("Failed downloading device information on first time connections");
-    } else if(ex instanceof BluetoothDiscoveryException) {
-        int androidBluetoothDiscoveryError = ((BluetoothDiscoveryException) ex).getScanError();
-        Toast.makeText(this, "Bluetooth Scan Error Code: " + androidBluetoothDiscoveryError, Toast.LENGTH_LONG).show();
-
-    } else if(ex instanceof ZeroColorimetersDiscoveredException){
-        new AlertDialog.Builder(this)
-                .setTitle("Missing Bluetooth Devices")
-                .setMessage("Failed to find color sensors in discovery scan")
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-
-    } else if(ex instanceof ButtonPressTimeoutException){
-        new AlertDialog.Builder(this)
-                .setTitle("Error during connection")
-                .setMessage("Failed to detect a second button press for confirmation")
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-
-    } else if(ex instanceof DeviceBatchException){
-        new AlertDialog.Builder(this)
-                .setTitle("Error during connection")
-                .setMessage("Please contact manufacturer about defective hardware. Serial Number: " + ((DeviceBatchException) ex).getSerial())
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-
-    } else if(ex instanceof CalibrationException){
-        new AlertDialog.Builder(this)
-                .setTitle("Error during connection")
-                .setMessage("Please contact manufacturer about defective hardware. Serial Number: " + ((CalibrationException) ex).getSerial())
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-    }
-
-    btnControl.setEnabled(true);
-}
-```
-Your implementation should update the UI as it receives these events. See the demo project for more details.
-
-Once the connection manager reaches the .DeviceReady state, the device can be calibrated and then can be used to scan colors.
-
-#### Using Direct Connect
 Before connecting, you need to scan for BLE devices:
 ```
-// This will cancel any existing multi connection attempt in progress. Accepts a onDiscoveryListener and a onErrorListener.
+// This will cancel any existing connection attempt in progress. Accepts a onDiscoveryListener and a onErrorListener.
 sdk.getConnectionManager().discoverBluetoothDevices(this, this);
 ```
 
@@ -289,7 +194,7 @@ Once the user has selected the device to connect to, we call:
  sdk.getConnectionManager().connect(device, this, this);
 
 ```
-The connect method accepts the BluetoothDevice to connect to, an DeviceConnectionListener, and an onErrorListener. The two later are the same used for multi connect.
+The connect method accepts the BluetoothDevice to connect to, an DeviceConnectionListener, and an onErrorListener.
 
 Once this is completed, your DeviceConnectionListener will recieve the .Ready state change, and will be ready to scan colors.
 
