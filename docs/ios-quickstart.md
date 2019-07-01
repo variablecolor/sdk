@@ -249,35 +249,30 @@ VCFProductSearch.fetchInspirationFilters { filters, _ in
 }
 ```
 
-## Connecting to Color Muse
 
-In order to scan colors, you need to establish a BLE connection to a Color Muse device.
+
+## Connecting to Color Muse / Spectro 1
+
+In order to scan colors, you need to establish a BLE connection to a Color Muse or Spectro 1 device.
+Color Muse & Spectro 1 are both represented as instances of the `ColorInstrument` class. 
 A network is required to download device-specific information from our servers the first
-time you connect to a given Color Muse device.
+time you connect to a given `ColorInstrument`.
 
-There are two primary ways to connect: multi connect and direct connect.
+### General Connection Flow
+Connecting to a `ColorInstrument` is invoked via the SDK's connection manager.
 
-**Multi connect** scans for Color Muses in the vicinity, connects to each one, then
-waits for the user to confirm their device via hardware button press (on the Color Muse).
+The (Direct) Connection Manager provides methods for performing Bluetooth discovery, connection, etc. 
+The demo app uses the Connection Manager to scan for bluetooth devices, provide the user a list of visible devices to select from, and connect to the device selected by the user.
 
-**Direct connect** connects to a single Color Muse device.
-The device can be chosen from a list by the user after scanning, or could be a
-previously known, connected device.
 
-### Using multi connect
+### Status & Feedback from the Connection Manager
 
-Multi connect is the preferred way to get a user connected to their Color Muse.
+To monitor the connection state / check for errors - your code should implement the `VCFConnectionManagerDelegate` methods:
 
-Start multi connect by calling `multiConnectStart` and passing it a delegate that implements the `VCFConnectionManagerDelegate` protocol.
+The listener will provide feedback via three delegate methods:
 
 ```swift
-VCFCentral.connectionManager.multiConnectStart(self)
-```
-
-Your delegate needs to implement three methods:
-
-```swift
-func onStateChanged(_ state: VConnectState, discoveredPeripherals _: UInt) {
+func connectionManagerDidUpdate(_ state: VConnectState) {
   switch state {
     case .Disconnected:
       break
@@ -294,79 +289,85 @@ func onStateChanged(_ state: VConnectState, discoveredPeripherals _: UInt) {
   }
 }
 
-func onWarning(_ error: Error) {
-  // handle warning
+func connectionManagerDidDiscoverPeripherals(_ peripherals: [VPeripheralWRSSI]!) {
+  // called every time the connection manager discovers a new peripheral
+  // NOTE: all discovered peripherals are returned
 }
 
-func onError(_ error: Error) {
+func connectionManagerDidError(_ error: Error) {
   // handle error
 }
 ```
 
-Your delegate should update the UI as it receives these events. See the demo
-project for more details.
 
-Once the connection manager reaches the `.DeviceReady` state, the device can be
-calibrated and then can be used to scan colors.
+## Implementing the connection flow
 
-## Using direct connect
-
-Before connecting, you need to scan for BLE devices:
+Before doing anything, set a delegate on the ConnectionManager:
 
 ```swift
-VCFCentral.connectionManager.discoverBluetoothDevices { (peripherals: [CBPeripheral]?, error: Error?) in
-  guard err == nil else {
-    //handle error
-    return
-  }
-
-  self.discoveredPeripherals = ps
-}
+VCFCentral.connectionManager.delegate = self
 ```
+
+Before connecting, you need to scan for BLE devices.
+
+The `startDiscovery` method allows you to scan for both Color Muse and Spectro 1. 
+Spectro 1 has a special "double click" advertising mode. In order to scan for just Spectro 1 devices that have been double clicked, pass a `VCFDiscoveryOptions` instance to this method with `ignoreSingleClickAdvertising` set to `true`.
+
+```swift
+VCFCentral.connectionManager.startDiscovery(with: VCFDiscoveryOptions.default())
+```
+
+As devices are discovered, the `connectionManagerDidDiscoverPeripherals(_ peripherals: [VPeripheralWRSSI]!)` 
+delegate function will be invoked.
+
+`VPeripheralWRSSI` is a container class, instances containing a CBPeripheral & RSSI level (typically ranging from -90 up to -50).
 
 You would typically display the list of peripherals to the user and allow them to select a device
-to connect to.
+to connect to (refer to the demo project's `DirectConnectViewController.swift`).
 
-Before attempting a connection, set a connectionListener on connectionManager:
-
-```swift
-VCFCentral.connectionManager.connectionListener = self
-```
-
-The same delegate protocol is used for both multi connect and direct connect.
-
-To connect to a given device, call `connect` like so:
+To connect to a given device, call stop discovery and connect like so:
 
 ```swift
-VCFCentral.connectionManager.connect(to: p) { error in
-  guard err == nil else {
-    //handle error
-    return
-  }
+VCFCentral.connectionManager.stopDiscovery()
 
-  //VCFCentral.connectionManager.connectedDevice will now be set
+// p is a CBPeripheral instance
+VCFCentral.connectionManager.connectToPeripheral(with: p.identifier)
 }
 ```
 
-Once this succeeds (or your delegate receives the `.DeviceReady` state change),
-the device can be calibrated and then can be used to scan colors.
+You will be notified of connection progress via the `connectionManagerDidUpdate(_ state: VConnectState)` delegate method.
+
+Once the `DeviceReady` state has been reached, the device can be calibrated and be used to scan colors.
+
+If you already know the UUID of the peripheral to which you wish to connect (e.g. from a previous connection), you can skip the discovery process.
 
 ## Calibration
 
-Before scanning, the device needs to be calibrated:
+Calibration for Spectro 1 is different from Color Muse. 
+Color Muse requires calibration on every connection, whereas Spectro 1 will require calibration every 500~1000 scans. 
+
+You can check if calibration is required using the `ColorInstrument.isCalibrated()` method. 
+
+If the device needs to be calibrated, you need to perform a calibration scan and then send that scan to the SDK. 
+
+The basic flow is as follows (note that `setCalibration` accepts an array, since the Spectro 1 requires 3 tiles to be scanned to calibrate. See the demo code for more details):
 
 ```swift
-if let dev = VCFCentral.connectionManager.connectedDevice {
-  dev.requestCalibration { _, error in
-    guard err == nil else {
+dev.requestCalibrationScan { (calScan:VCFColorScan?, error:Error?) in
+    guard let cs = calScan, error == nil else {
       //handle error
       return
     }
-
-    //device is calibrated and ready to scan
+    dev.setCalibration([cs], complete: { (setCalError:Error?) in
+      if let err = setCalError{
+        //handle error
+        return
+      }
+      //device is calibrated and ready to scan
+    })
   }
-}
-```
+```  
+
 
 ## Scanning
 
@@ -402,6 +403,11 @@ Values can be retrieved in a variety of formats.
 
     // LCH color
     let lchColor = scan.lchColor
+
+    // Spectrum (if hardware is a Spectro 1, etc)
+    if let curve = scan.spectralCurve{
+      //display spectral curve on graph
+    }
   }
 }
 ```
