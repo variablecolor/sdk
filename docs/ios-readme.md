@@ -23,7 +23,6 @@ If you don't have an SDK key, contact Variable, Inc - or your company's account 
 
 Download and extract the variable-color-demo project from bitbucket via the [iOS download link](https://bitbucket.org/variablecolor/sdk/raw/master/downloads/variable-color-ios-latest.zip) on the [Variable Color SDK site](https://bitbucket.org/variablecolor/sdk).
 
-
 ### Testing & Running the Demo App
 
 In `MainViewController.swift` - update the init line with the SDK key received from Variable, Inc.  
@@ -56,28 +55,27 @@ The VariableSDK framework and required Realm framework can be copied from the de
 
 ## Changelog
 
+### v8.5.0
+
+- disconnect issue fixed; support for newer hardware added
+
 ### v8.4.41
 
 - direct connection manager callbacks have been removed; this class now uses the delegate pattern only
-
 
 ### v8.0.9
 
 - versioning updated to line up with external apps
 - requestColorScan callback reverted to single ColorScan response
 - connection logic simplified to just direct connect
-- Calibration for Color Muse requires 1 scan of the calibration cap. 
+- Calibration for Color Muse requires 1 scan of the calibration cap.
 - Calibration for Spectro 1 requires scanning the 3 tiles provided with Spectro 1 (white, green, & blue)
 - Calibration related SDK interface changed to be more flexible:
-  - Use 
-        ```
-        dev.requestCalibrationScan { (calScan:VCFColorScan?, error:Error?) in })
-        ```
-to perform a calibration scan, and then 
   - Use
-        ```
-        dev.setCalibration(calScanArray, complete: { (error:Error?) in })
-        ```  to set the calibration on the device.
+    `dev.requestCalibrationScan { (calScan:VCFColorScan?, error:Error?) in })`
+    to perform a calibration scan, and then
+  - Use
+    `dev.setCalibration(calScanArray, complete: { (error:Error?) in })` to set the calibration on the device.
 
 ### v2.1.1
 
