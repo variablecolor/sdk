@@ -55,6 +55,11 @@ The VariableSDK framework and required Realm framework can be copied from the de
 
 ## Changelog
 
+### v8.5.3
+
+- fixes more disconnect bugs
+- support for newer hardware with different calibration flows added
+
 ### v8.5.0
 
 - disconnect issue fixed; support for newer hardware added
