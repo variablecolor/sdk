@@ -1,6 +1,6 @@
 # Variable SDK Demo
 This demo project shows basic usage of the VariableSDK framework.
-The sdk is broken into to major parts:
+The sdk is broken down into 2 major parts:
 
 ##### *Bluetooth Functionality*
 - Various means of Bluetooth connection to a ColorInstrument (aka ColorMuse, Spectro1, etc).
@@ -10,9 +10,9 @@ The sdk is broken into to major parts:
 ##### *Product Searching*
 - Download "Products" with progress updates
 - Checking for new product content
-- Filter products by various key /value pairs (categories/brands/etc)
+- Filter products by various key / value pairs (e.g. categories: paint, and tile)
 - Search products by color from a ColorInstrument device scan
-- Search products by code/text
+- Search products by code or text
 - Cross reference products
 - Browsing products
 - Using the ProductSearch class to construct searches
@@ -44,7 +44,7 @@ Inside of your project, add our public repository to your build's repositories.
 Now, add the `variable-color-framework` dependency to your project.
 ```gradle
 dependency {
-    implementation 'com.variable:variable-color-framework:1.1.0'
+    implementation 'com.variable:variable-color-framework:2.0.1'
 }
 ```
 
@@ -52,7 +52,11 @@ dependency {
 
 
 #### Release Notes
-
+#### 2.0.1
+ - Major support for Spectro One, Spectro One SCI, Color Muse Pro, and Color Muse Pro SCI.
+ - Critical bug causing initialization failure without cause.
+ 
+ 
 #### 1.1.0 
  - Critical bug fixed with color muse calibration failing.
  

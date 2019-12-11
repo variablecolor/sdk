@@ -1,9 +1,9 @@
-# Variable Color SDK - Getting Start
+# Variable Color SDK - Getting Started
 
 ### Initialization
-Before any calls are made into the sdk, please initialize a `Variable` object.
+Before any calls are made into the sdk, initialize a `Variable` object.
 
-The onErrorListener and OnVariableColorInitializeListener are references are not held onto by our sdk.
+The onErrorListener and OnVariableColorInitializeListener references are not held onto inside this SDK.
 
 For more context, view InitializationActivity
 ```java
@@ -25,9 +25,9 @@ For more context, view InitializationActivity
 
 
 ### Downloading Products
-Before products can be used (searched / browsed / search filters ), they must be downloaded and saved locally.
+Before products can be used (searched / browsed / queried ), they must be downloaded and saved locally.
 
-To download products, call this function and pass an instanceof `Products.DownloadListener`.
+See snippet below on how to download products=.
 
 For more examples, view the ProductDownloadActivity
 ```java
@@ -52,12 +52,12 @@ public void onComplete(boolean isSuccess) {
 ```
 
 
-You can check if products need to be redownloaded (e.g. in the case they have been updated remotely) using:
+You can check if new content is available (e.g. in the case they have been updated remotely) using:
 ```java
  boolean isDownloadRequired = (((SampleApplication) getApplication()).getVariableSDK().getProductManager().isDownloadRequired());
 ```
 
-### Browsing & searching products
+### Browsing & Searching Products
 The following can fetch the first 25 products using `ProductSearch` with limit and skip:
 ```
  new ProductSearch()
@@ -65,6 +65,7 @@ The following can fetch the first 25 products using `ProductSearch` with limit a
     .setLimit(25)
     .execute( OnSearchCompleteListener.this, OnErrorListener.this )
 ```
+For performance reason, it is recommended to keep the limit size < 30 per ProductSearch. In addition to, all product searches are serially executed on a background thread.
 
 
 #### Filtering
@@ -87,9 +88,9 @@ new ProductSearch()
 ```
 As seen in the above example, filters are key-value pairs typically created using the SearchFilter class.
 
-This is typically done by fetching all available filters and then allowing the user to select some combination of these filters. This is shown in the demo app (see SearchFilterSelectionFragment.java).
+This is achieved by fetching all available filters and then allowing the user to select some combination of these filters. This is shown in the demo app (see SearchFilterSelectionFragment.java).
 
-Availble filters can be fetched using the SearchFilterSet class.
+Available filters can be fetched using the SearchFilterSet class.
 
 ```java
 OnSearchFilterFetchListener listener = new OnSearchFilterFetchListener() {
@@ -114,7 +115,7 @@ searchFilterSet.initialize(listener);
 ```
 
 #### Inspiration Filters
-When available, the optional `isInspiration` flag can be set on SearchFilterSet.
+When available, the optional `isInspiration` flag can be set on SearchFilterSet. Inspiration searches  and queries for filters are online only.
 ```java
 OnSearchFilterFetchListener listener = new OnSearchFilterFetchListener() {
 
@@ -174,12 +175,12 @@ new ProductSearch()
 ```
 
 
-### Connecting To Color Muse
-In order to scan colors, you need to establish a BLE connection to a Color Muse device. A network is required to download device-specific information from our servers the first time you connect to a given Color Muse device.
+### Connecting to a bluetooth color sensor
+In order to scan colors, you need to establish a BLE connection to a Color Muse or Spectro One. A network is required to download device-specific information from our servers the first time you connect to a color sensor.
 
 
 #### Direct Connect
-Direct connect establishes communication to a single Color Muse device. The device can be chosen from a list by the user after scanning, or could be a previously known, connected device.
+Direct connect establishes communication to a single bluetooth device. It can be chosen from a list by the user after bluetooth discovery interval, or could be a previously known, connected device.
 
 Before connecting, you need to scan for BLE devices:
 ```
@@ -192,22 +193,69 @@ You would typically display the list of peripherals to the user and allow them t
 Once the user has selected the device to connect to, we call:
 ```
  sdk.getConnectionManager().connect(device, this, this);
-
 ```
 The connect method accepts the BluetoothDevice to connect to, an DeviceConnectionListener, and an onErrorListener.
 
-Once this is completed, your DeviceConnectionListener will recieve the .Ready state change, and will be ready to scan colors.
+Once this is completed, your DeviceConnectionListener will receiver the .Ready state change, and will be ready to scan colors.
 
 ### Calibration
-Before scanning, the device needs to be calibrated:
+The type and requirements of device calibration is dependent on the device connected to. The three device families the sdk supports are listed below and how to utilize the `setCalibrationScans` method. ColorInstrument.isCalibrated returns the current calibration status of the connected colorimeter.
+ 
+ 1. Spectro One requires a sample scan on the white tile, and two verification scans provided in it's packaging.  
+    ```java
+        // ColorInstrument.isSpectro(getColorInstrument())
+       private void handleSpectroCalibration(View view) {
+            if (whiteTileScan != null) {
+                getColorInstrument().setCalibrationScans(
+                        Arrays.asList(this.whiteTileScan, this.greenTileScan, this.blueTileScan),
+                        (peripheral, isSuccess) -> {
+                            Toast.makeText(CalibrationActivity.this, "Calibration Success", Toast.LENGTH_SHORT).show();
+    
+                            clearTileScans();
+    
+                        }, this::handleScanError);
+            }
+        }
+    ``` 
+    
+ 2. Color Muse Pro requires a calibration sample scan of the white tile that is provided in the manufacturer's packaging.  It is recommended to periodically check the `isCalibrated`  on the connected ColorInstrument.  
+    ```java
+       // ColorInstrument.isColorMusePro(getColorInstrument())
+      private void handleColorMuseProCalibration(View view) {
+            getColorInstrument().requestCalibration(new OnColorCaptureListener() {
+                @Override
+                public void onColorCapture(@NonNull ColorInstrument colorInstrument, @NonNull ColorScan scan) {
+                    colorInstrument.setCalibrationScans(
+                            Arrays.asList(scan),
+                            (peripheral, isSuccess) -> Toast.makeText(CalibrationActivity.this, "Calibration Result is " + isSuccess, Toast.LENGTH_SHORT).show(), null);
+                }
+    
+                @Override
+                public void onSpectrumCapture(@NonNull ColorInstrument colorInstrument, @NonNull ColorScan scan) { }
+            }, this::handleScanError);
+        }
+    ``` 
+ 
+ 3. Color Muse requires a whitepoint cap scan before any usage, and directly after connection.  It is recommended to calibrate every 30 minutes, or under drastic temperature changes.
+    ```java
+    // ColorInstrument.isColorMuse(getColorInstrument())
+    private void handleMuseCalibration(View view) {
+        getColorInstrument().requestCalibration(new OnColorCaptureListener() {
+            @Override
+            public void onColorCapture(@NonNull ColorInstrument colorInstrument, @NonNull ColorScan scan) {
+                colorInstrument.setCalibrationScans(
+                        Arrays.asList(scan),
+                        (peripheral, isSuccess) -> Toast.makeText(CalibrationActivity.this, "Calibration Result is " + isSuccess, Toast.LENGTH_SHORT).show(), null);
+            }
 
-```
-Colorimeter peripheral = this.connectionManager.getConnectedPeripheral();
-//Ensure peripheral is connected.
-if(peripheral != null){
-    peripheral.requestCalibration(ColorimeterFragment.this::onCalibrationResult);
-}
-```
+            @Override
+            public void onSpectrumCapture(@NonNull ColorInstrument colorInstrument, @NonNull ColorScan scan) { }
+        }, this::handleScanError);
+
+    }
+    ```
+    
+ View CalibrationActivity.java for more complete usage of setCalibrationScans.
 
 ### Scanning
 In order to scan, you will need to implement an onColorCaptureListener and an onErrorListener. These are accepted by Colorimeter.requestColorScan.
@@ -239,8 +287,12 @@ public void onColorCapture(@NonNull Colorimeter colorimeter, @NonNull ColorScan 
     // Use the ColorScan and get D50 10°
     LabColor d50_10 = scan.getAdjustedLabColor(Illuminants.D65, Observer.TEN_DEGREE);
 }
-```
 
+@Override
+public void onSpectrumCapture(@NonNull Colorimeter colorimeter, @NonNull ColorScan scan) {
+    @NonNull SpectralCurve data = scan.getSpectralCurve();
+}
+```
 
 ### Scanning and Searching
 Shown in the section above, implement the onColorCaptureListener to make a search using the ColorScan.
