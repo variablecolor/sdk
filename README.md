@@ -27,5 +27,6 @@ Documentation can be found in the source code of the SDKs.
 
 ## iOS
 
-- [iOS readme](docs/ios-readme.md)
-- [iOS quickstart](docs/ios-quickstart.md)
+To see some code examples and learn how to use the SDK, see the [iOS quickstart](docs/ios-quickstart.md) guide.
+
+To view the changelog, see the [README](docs/ios-readme.md).
