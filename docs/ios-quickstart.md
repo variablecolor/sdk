@@ -9,6 +9,8 @@ VCFCentral.initWith("YOUR_SDK_KEY", delegate: self)
 ```
 
 The `VCFCentralDelegate` has a single function that is called once the SDK is ready to use.
+Within this function, you can set the `VCFCentral.connectionManager` delegate in order to
+get connectionManager state updated.
 
 ```swift
 func onInit(_ err: Error?) {
@@ -17,7 +19,21 @@ func onInit(_ err: Error?) {
       }
 
       //SDK init success
+      VCFCentral.connectionManager.delegate = self
+      print("VariableColor initialized using version \(VariableColorVersion)")
   }
+```
+
+You will receive a state update from `VCFCentral.connectionManager` with state set to `VConnectState.Initialized` when the SDK is ready
+to start discovering or connecting to devices.
+
+```swift
+func connectionManagerDidUpdate(_ state: VConnectState) {
+  if(state == .Initialized) {
+    // ready to start discovery or connection process
+    VCFCentral.connectionManager.startDiscovery(with: VCFDiscoveryOptions.default())
+  }
+}
 ```
 
 ## Downloading Products
@@ -249,21 +265,19 @@ VCFProductSearch.fetchInspirationFilters { filters, _ in
 }
 ```
 
-
-
 ## Connecting to Color Muse / ColorMuse Pro / Spectro 1
 
 In order to scan colors, you need to establish a BLE connection to a Color Muse, Muse Pro, or Spectro 1 device.
-Color Muse, ColorMuse Pro,  & Spectro 1 are all represented as instances of the `ColorInstrument` class. 
+Color Muse, ColorMuse Pro, & Spectro 1 are all represented as instances of the `ColorInstrument` class.
 A network is required to download device-specific information from our servers the first
 time you connect to a given `ColorInstrument`.
 
 ### General Connection Flow
+
 Connecting to a `ColorInstrument` is invoked via the SDK's connection manager.
 
-The (Direct) Connection Manager provides methods for performing Bluetooth discovery, connection, etc. 
+The (Direct) Connection Manager provides methods for performing Bluetooth discovery, connection, etc.
 The demo app uses the Connection Manager to scan for bluetooth devices, provide the user a list of visible devices to select from, and connect to the device selected by the user.
-
 
 ### Status & Feedback from the Connection Manager
 
@@ -299,7 +313,6 @@ func connectionManagerDidError(_ error: Error) {
 }
 ```
 
-
 ## Implementing the connection flow
 
 Before doing anything, set a delegate on the ConnectionManager:
@@ -310,14 +323,14 @@ VCFCentral.connectionManager.delegate = self
 
 Before connecting, you need to scan for BLE devices.
 
-The `startDiscovery` method allows you to scan for a Color Muse / Muse Pro / Spectro 1. 
+The `startDiscovery` method allows you to scan for a Color Muse / Muse Pro / Spectro 1.
 Spectro 1 & ColorMuse Pro have a special "double click" advertising mode. In order to scan for just Spectro 1 & Muse Pro devices that have been double clicked, pass a `VCFDiscoveryOptions` instance to this method with `ignoreSingleClickAdvertising` set to `true`.
 
 ```swift
 VCFCentral.connectionManager.startDiscovery(with: VCFDiscoveryOptions.default())
 ```
 
-As devices are discovered, the `connectionManagerDidDiscoverPeripherals(_ peripherals: [VPeripheralWRSSI]!)` 
+As devices are discovered, the `connectionManagerDidDiscoverPeripherals(_ peripherals: [VPeripheralWRSSI]!)`
 delegate function will be invoked.
 
 `VPeripheralWRSSI` is a container class, instances containing a CBPeripheral & RSSI level (typically ranging from -90 up to -50).
@@ -343,12 +356,12 @@ If you already know the UUID of the peripheral to which you wish to connect (e.g
 
 ## Calibration
 
-Calibration for Spectro 1, ColorMuse Pro, & Colro Muse is all different. 
-Color Muse requires setting calibration on every connection, whereas Spectro 1 and ColorMuse Pro will require calibration every 500~1000 scans. 
+Calibration for Spectro 1, ColorMuse Pro, & Colro Muse is all different.
+Color Muse requires setting calibration on every connection, whereas Spectro 1 and ColorMuse Pro will require calibration every 500~1000 scans.
 
-You can check if calibration is required using the `ColorInstrument.isCalibrated()` method. 
+You can check if calibration is required using the `ColorInstrument.isCalibrated()` method.
 
-If the device needs to be calibrated, you need to perform a calibration scan and then send that scan to the SDK. 
+If the device needs to be calibrated, you need to perform a calibration scan and then send that scan to the SDK.
 
 The basic flow is as follows (note that `setCalibration` accepts an array, since the Spectro 1 requires 3 tiles to be scanned to calibrate (whereas MusePro and Muse only require on scan). See the demo code for more details):
 
@@ -366,8 +379,7 @@ dev.requestCalibrationScan { (calScan:VCFColorScan?, error:Error?) in
       //device is calibrated and ready to scan
     })
   }
-```  
-
+```
 
 ## Scanning
 
