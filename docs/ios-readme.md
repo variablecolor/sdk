@@ -58,7 +58,7 @@ The VariableSDK framework and required Realm framework can be copied from the de
 ### v8.7.0
 
 - exposed cbcentral from VCFConnectionManager
-- adds new `.Initialized` state to VCFConnectionManager (see [quickstart.md](quickstart.md)) for updated flow
+- adds new `.Initialized` state to VCFConnectionManager (see [quickstart.md](ios-quickstart.md)) for updated flow
 
 ### v8.5.3
 
