@@ -46,8 +46,8 @@ _As Apple stopped supporting simulator+Bluetooth Low Energy support, you must us
 
 - [Realm](https://realm.io/docs/objc/latest/) - Required by Variable SDK for storing internal data.
 - [ZipArchive](https://github.com/ZipArchive/ZipArchive) - Used for zip file manipulation
-- [Kingfisher](https://github.com/onevcat/Kingfisher) - Used for image caching in the demo project (not required by SDK. Added to the demo using [Carthage](https://github.com/Carthage/Carthage)).
-- [ScrollableGraphView](https://github.com/philackm/ScrollableGraphView) - Used for spectral graphs in the demo project (not required by SDK. Added to the demo using [Carthage](https://github.com/Carthage/Carthage)).
+- [Kingfisher](https://github.com/onevcat/Kingfisher) - Used for image caching in the demo project (not required by SDK. Added to the demo using Swift Package Manager).
+- [ScrollableGraphView](https://github.com/philackm/ScrollableGraphView) - Used for spectral graphs in the demo project (not required by SDK. Added to the demo manually).
 
 ## Integrating with your own app
 
@@ -58,7 +58,7 @@ The VariableSDK framework and required Realm framework can be copied from the de
 ### v8.7.0
 
 - exposed cbcentral from VCFConnectionManager
-- adds new `.Initialized` state to VCFConnectionManager (see [quickstart.md](ios-quickstart.md)) for updated flow
+- adds new `.Initialized` state to VCFConnectionManager (see [quickstart.md](quickstart.md)) for updated flow
 
 ### v8.5.3
 
