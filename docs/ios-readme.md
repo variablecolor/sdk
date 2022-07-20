@@ -5,7 +5,7 @@ This demo project demonstrates basic use of the Variable Color framework.
 The demo shows how to:
 
 - Connect to a `ColorInstrument` (ie: a ColorMuse or Spectro 1 device) to make color scans.
-- Download "Products" ie various searchable color content like paint swatches accessable by the SDK key in use
+- Download "Products" ie various searchable color content like paint swatches accessible by the SDK key in use
 - Filter products by various categories/brands/etc
 - Search products by color from a `ColorInstrument` device scan
 - Search products by code/text
@@ -51,13 +51,17 @@ _As Apple stopped supporting simulator+Bluetooth Low Energy support, you must us
 
 ## Integrating with your own app
 
-The VariableSDK framework and required Realm framework can be copied from the demo project into yoru own project
+The VariableSDK framework and required Realm framework can be copied from the demo project into your own project
 
 ## Changelog
 
+### v9.0.0
+
+- support for Color Muse 2 devices
+
 ### v8.7.0
 
-- exposed cbcentral from VCFConnectionManager
+- exposed CBCentral from VCFConnectionManager
 - adds new `.Initialized` state to VCFConnectionManager (see [quickstart.md](quickstart.md)) for updated flow
 
 ### v8.5.3
@@ -152,8 +156,9 @@ When contributing to this repository, please first discuss the change you wish t
 
 ## Authors
 
-- **Andrew Temple** - _Initial work_
-- **Wade Gasior** - _Initial work_
+- **Andrew Temple**
+- **Wade Gasior**
+- **Corey Mann**
 
 ## License
 
