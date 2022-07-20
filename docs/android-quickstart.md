@@ -257,6 +257,12 @@ The type and requirements of device calibration is dependent on the device conne
     
  View CalibrationActivity.java for more complete usage of setCalibrationScans.
 
+ Any device's calibration status can be checked by doing the following:
+ ```java
+  boolean isDeviceCalibrated = getColorInstrument().isCalibrated()
+ ```
+
+
 ### Scanning
 In order to scan, you will need to implement an onColorCaptureListener and an onErrorListener. These are accepted by Colorimeter.requestColorScan.
 
@@ -306,3 +312,21 @@ public void onColorCapture(@NonNull Colorimeter colorimeter, @NonNull ColorScan 
         .execute(this, null);
 }
 ```
+
+
+### Requesting Device Information
+```
+  // Battery Percentage and Voltage
+  ///// percentage is 0 - 100
+  ///// voltage is expressed in volts ranging from 3.3 - 4.2
+  colorInstrument.requestBattery((c, percentage, voltage) -> {
+            Log.d("Variable-SDK", String.format("BATT: %.3f -  %d", voltage, percentage));
+  });
+  
+  
+   colorInstrument.requestChargingIndication((c, isCharged, isCharging) -> {
+        // do something
+    });
+        
+```
+

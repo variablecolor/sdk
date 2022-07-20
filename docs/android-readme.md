@@ -3,7 +3,7 @@ This demo project shows basic usage of the VariableSDK framework.
 The sdk is broken down into 2 major parts:
 
 ##### *Bluetooth Functionality*
-- Various means of Bluetooth connection to a ColorInstrument (aka ColorMuse, Spectro1, etc).
+- Various means of Bluetooth connection to a ColorInstrument (aka ColorMuse, Spectro 1, Spectro 1 Pro, Color Muse Pro, Color Muse Gen2 etc).
 - Requesting color scans and calibration from a connected ColorInstrument
 - Using the ConnectionManager and ColorInstrument classes
 
@@ -37,14 +37,14 @@ api_key= _your_variable_sdk_key_without_quotes
 Inside of your project, add our public repository to your build's repositories.
 ```gradle
     repositories{
-        maven { url = "http://variable-android.s3-website-us-east-1.amazonaws.com/release" }
+           maven{ url = "https://d31vfp4cw413ot.cloudfront.net/release" }
     }
 ```
 
 Now, add the `variable-color-framework` dependency to your project.
 ```gradle
 dependency {
-    implementation 'com.variable:variable-color-framework:2.0.1'
+    implementation 'com.variable:variable-color-framework:3.1.1'
 }
 ```
 
@@ -52,6 +52,33 @@ dependency {
 
 
 #### Release Notes
+#### 3.1.1
+ - Updates the build.gradle repository url to use SSL.
+ - Adds full support for Color Muse Gen 2 and Color Muse Pro devices
+ - Fixes issue when filter sets could return different results when the input was the same.
+ - enhances and optimizes offline searches to provide better color matching results
+ - Adds matching batch to response when using online searching
+ - [BREAKING CHANGE] alters onCalibrationResultListener to not pass the boolean as a result, but rather passes a nullable VariableException as the second argument to the callback. When this is null the calibration is successful.
+ - Adds more serialized fields to ColorScan's serialized format
+ - Upgrades retrofit2 from 2.3.0 to 2.9.0
+
+
+#### 2.3.9
+ - Fixes logic for requiring an auth call during initialization.
+
+#### 2.3.8
+ - Bug Fix with button click not dispatching to listeners
+ - [ Critical Bug Fix ] Disconnect peripheral when error occurs during connection and initialization
+ - [ Enhancement ] Searching with a text term now uses 'contains' functionality
+
+#### 2.3.6
+ - Replaces protobuf with protobuf-javalite, to avoid conflicts with firebase.
+ - Upgrades realm to v10.x.y
+ - Major reliability and connection bluetooth improvements
+ - Adds requesting signal strength to ColorInstrument.
+ - Bug fix for incorrect battery voltage and level calculation for  spectro based devices.
+ - fixes pom issue, and build scripts no longer require to add implementations of t-muse to there project.
+
 #### 2.0.1
  - Major support for Spectro One, Spectro One SCI, Color Muse Pro, and Color Muse Pro SCI.
  - Critical bug causing initialization failure without cause.
