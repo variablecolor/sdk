@@ -1,5 +1,3 @@
-![variable logo](https://s3.amazonaws.com/colorcloud.io/media/variable-logo-dark-grey-256.png)
-
 # Variable Color SDK
 
 The Variable Color SDK for Android & iOS allows you to:
