@@ -11,8 +11,8 @@ The Variable Color SDK for Android & iOS allows you to:
 
 The downloads include the SDK along with source code demonstrating basic use.
 
-- [Download for Android](https://bitbucket.org/variablecolor/sdk/raw/master/downloads/variable-color-android-latest.zip)
-- [Download for iOS](https://bitbucket.org/variablecolor/sdk/raw/master/downloads/variable-color-ios-latest.zip)
+- [Download for Android](/variablecolor/sdk/raw/master/downloads/variable-color-android-latest.zip)
+- [Download for iOS](/raw/master/downloads/variable-color-ios-latest.zip)
 
 # Documentation
 
