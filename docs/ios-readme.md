@@ -55,6 +55,10 @@ The VariableSDK framework and required Realm framework can be copied from the de
 
 ## Changelog
 
+### v9.0.4
+
+- fixes an issue that prevented connecting to certain devices in certain locales (primarily in EU)
+
 ### v9.0.0
 
 - support for Color Muse 2 devices
