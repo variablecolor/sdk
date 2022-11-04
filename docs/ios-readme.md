@@ -55,6 +55,12 @@ The VariableSDK framework and required Realm framework can be copied from the de
 
 ## Changelog
 
+### v9.0.5
+
+- fixes an issue that would prevent certain hardware versions from connecting
+- updates battery calculation for newer device firmware versions
+- minor update to color search algorithm to allow for less strict inter-device matching
+
 ### v9.0.4
 
 - fixes an issue that prevented connecting to certain devices in certain locales (primarily in EU)
