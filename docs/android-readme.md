@@ -1,9 +1,10 @@
 # Variable SDK Demo
-This demo project shows basic usage of the VariableSDK framework.
+This demo project shows basic usage of the VariableSDK framework (v3.2.2).
+
 The sdk is broken down into 2 major parts:
 
 ##### *Bluetooth Functionality*
-- Various means of Bluetooth connection to a ColorInstrument (aka ColorMuse, Spectro 1, Spectro 1 Pro, Color Muse Pro, Color Muse Gen2 etc).
+- Connecting via Bluetooth to a ColorInstrument (aka ColorMuse, Spectro 1, Spectro 1 Pro, Color Muse Pro, Color Muse Gen2 etc).
 - Requesting color scans and calibration from a connected ColorInstrument
 - Using the ConnectionManager and ColorInstrument classes
 
@@ -34,7 +35,7 @@ api_key= _your_variable_sdk_key_without_quotes
 
 ##### Integrating with your application
 
-Inside of your project, add our public repository to your build's repositories.
+Inside of your project, add our public repository to your build's repositories. Please note earlier versions may have used an http url scheme, and is now deprecated.
 ```gradle
     repositories{
            maven{ url = "https://d31vfp4cw413ot.cloudfront.net/release" }
@@ -44,7 +45,7 @@ Inside of your project, add our public repository to your build's repositories.
 Now, add the `variable-color-framework` dependency to your project.
 ```gradle
 dependency {
-    implementation 'com.variable:variable-color-framework:3.1.1'
+    implementation 'com.variable:variable-color-framework:3.2.2'
 }
 ```
 
@@ -52,6 +53,30 @@ dependency {
 
 
 #### Release Notes
+#### 3.2.2
+ - Fixes devices not being able to be discovered on android 5 through 11.
+ - Upgrades build environment to use Java 17 and AGP 8+
+
+#### 3.2.1
+ - Missing GlossMeasurement class file during compilation.
+
+#### 3.2.0
+ - Upgrade realm from 10.2.0 to 10.5.1
+ - Fixes battery level percentage to maximizes Color Muse 2 battery life.
+ - Fixes issue with online search provider ignoring 10° target observer.
+ - Internal refactoring for Spectro class device storage. This may require user's to redownload remote data
+ - Further enhances Gloss algorithm for Color Muse 2.0
+ - Adds new spectral_curves property to serialization of ColorScan. Adds ability to request target instrument spectral curve on ColorScan objects.
+ - Change Spectro class devices to require calibration every 500 scans. (Previously was 1,000)
+ - Adds new public interface for BatchedColor. A BatchedColor can either be a lab color or a spectral curve with a reference id.
+ - Breaking Change: Adds property to public ColorScan class for obtaining all batched colors.
+ - Fixes searching by text where the search term now honors a contains-like methodology.
+ - Critical Color Muse 2 fix for uncalibrated devices that are in the field.
+ - Provides better support for api level 21 and 22.
+ - Creates new public constructor for ProductManager that accepts an AppContext and a package id for multiple package usage with the same Variable instance.
+ - Default all product searches to be offline
+ - Optimizes downloading of product data
+
 #### 3.1.1
  - Updates the build.gradle repository url to use SSL.
  - Adds full support for Color Muse Gen 2 and Color Muse Pro devices
