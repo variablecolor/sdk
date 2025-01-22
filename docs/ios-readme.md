@@ -25,22 +25,24 @@ Download and extract the variable-color-demo project from bitbucket via the [iOS
 
 ### Testing & Running the Demo App
 
-In `MainViewController.swift` - update the init line with the SDK key received from Variable, Inc.  
-(If you don't have a key, contact Variable, Inc - or your company's account manager to Variable in to get this key).
+- Install project dependencies (File -> Packages -> Resolve Package Versions)
 
-To verify your key works, run the project on the simulator.  
-If the main screen loads and updates from  
-`variable color framework demo (SDK key required to proceed)`  
-to  
-`variable color framework demo`  
-then your key is functional.
+- In `MainViewController.swift` - update the init line with the SDK key received from Variable, Inc.  
+   (If you don't have a key, contact Variable, Inc - or your company's account manager to Variable in to get this key).
+
+  To verify your key works, run the project on the simulator.  
+  If the main screen loads and updates from  
+  `variable color framework demo (SDK key required to proceed)`  
+  to  
+  `variable color framework demo`  
+  then your key is functional.
 
 ### Simulator vs physical iOS Device
 
 - Simulator - Can be used for testing product browsing / filtering / and searching by text
-- Physical iOS Device - required for testing any color scanning and related product searching due to BLE requirements.
+- Physical iOS Device - **required for testing any color scanning** and related product searching due to BLE requirements.
 
-_As Apple stopped supporting simulator+Bluetooth Low Energy support, you must use a physical device for anything related to BLE._
+**As Apple has stopped supporting Bluetooth on iOS simulators, you must use a physical device for anything requiring device connectivity.**
 
 ## Built With
 
@@ -54,6 +56,36 @@ _As Apple stopped supporting simulator+Bluetooth Low Energy support, you must us
 The VariableSDK framework and required Realm framework can be copied from the demo project into your own project
 
 ## Changelog
+
+### v10.5.5
+
+- Fixes a serialization issue with color readings from newer instruments
+
+### v10.5.4
+
+- Adds additional headers to SDK auth requests
+
+### v10.5.3
+
+- Unreleased
+
+### v10.5.2
+
+- Bug fixes for cloud credentials
+
+### v10.5.0
+
+- Support added for Variable's newest color matching hardware
+
+### v10.4.2
+
+- **MAJOR UPDATE**: this SDK is now available in two variants:
+  - CORE: This includes the core functionality of the SDK focused on device connection and color scanning.
+  - FULL: This includes the core functionality of the SDK, as well as product management, browsing, and filtering functionality.
+- Swift Package Manager support added
+  - The SDK is now available as a Swift Package Manager package. This is the recommended way to integrate the SDK into your project.
+  - CORE: https://github.com/variablecolor/variablecolor-swift-core
+  - FULL: https://github.com/variablecolor/variablecolor-swift
 
 ### v9.0.5
 
