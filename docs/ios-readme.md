@@ -57,6 +57,11 @@ The VariableSDK framework and required Realm framework can be copied from the de
 
 ## Changelog
 
+### v12.0.3
+
+- Support added for Variable's newest color matching hardware
+- Additional headers added for device alignment data downloads
+
 ### v10.5.5
 
 - Fixes a serialization issue with color readings from newer instruments
