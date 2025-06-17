@@ -1,10 +1,10 @@
 # Variable SDK Demo
-This demo project shows basic usage of the VariableSDK framework (v3.2.2).
+This demo project shows basic usage of the VariableSDK framework (v12.0.0).
 
 The sdk is broken down into 2 major parts:
 
 ##### *Bluetooth Functionality*
-- Connecting via Bluetooth to a ColorInstrument (aka ColorMuse, Spectro 1, Spectro 1 Pro, Color Muse Pro, Color Muse Gen2 etc).
+- Connecting via Bluetooth to a ColorInstrument (e.g. ColorMuse, Spectro 1, Spectro 1 Pro, Color Muse Pro, Color Muse Gen2 etc).
 - Requesting color scans and calibration from a connected ColorInstrument
 - Using the ConnectionManager and ColorInstrument classes
 
@@ -45,7 +45,7 @@ Inside of your project, add our public repository to your build's repositories. 
 Now, add the `variable-color-framework` dependency to your project.
 ```gradle
 dependency {
-    implementation 'com.variable:variable-color-framework:3.2.2'
+    implementation 'com.variable:variable-color-framework:12.0.0'
 }
 ```
 
@@ -53,6 +53,18 @@ dependency {
 
 
 #### Release Notes
+#### 12.0.0
+ - Versioning brought up to be in line with iOS major version
+ - Adds support for more colorimeters and Spectrophotometers.
+ - Adds a new function to ColorInstrument to recompute an existing scan for a connected instrument.
+ - [BREAKING CHANGE] - removes recomputing a ColorScan from a single array of values.
+ - Enforces gloss domain to be within 0 - 1.10
+
+#### 3.2.4
+ - Adds getSpectralCurve with reference id to Color Scan interface.
+ - Exposes the expected scan count for a ColorInstrument calibration.
+ - Exposes the BatchedColor class for consumption by client code.
+
 #### 3.2.2
  - Fixes devices not being able to be discovered on android 5 through 11.
  - Upgrades build environment to use Java 17 and AGP 8+
