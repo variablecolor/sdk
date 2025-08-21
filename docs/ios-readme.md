@@ -57,6 +57,15 @@ The VariableSDK framework and required Realm framework can be copied from the de
 
 ## Changelog
 
+### v12.0.5
+
+- Adds support for new hardware devices
+- Fixes a crash when downloading ANN packages
+
+### v12.0.4
+
+- Do not use
+
 ### v12.0.3
 
 - Support added for Variable's newest color matching hardware
