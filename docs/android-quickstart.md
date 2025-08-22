@@ -88,7 +88,7 @@ new ProductSearch()
 ```
 As seen in the above example, filters are key-value pairs typically created using the SearchFilter class.
 
-This is achieved by fetching all available filters and then allowing the user to select some combination of these filters. This is shown in the demo app (see SearchFilterSelectionFragment.java).
+This is achieved by fetching all available filters and then allowing the user to select some combination of these filters. This is shown in the demo app ([see SearchFilterSelectionFragment.java](https://bitbucket.org/variablecolor/android-variable-color-sdk-examples/src/master/src/main/java/com/variable/example/fragment/SearchFilterSelectionFragment.java)).
 
 Available filters can be fetched using the SearchFilterSet class.
 
@@ -227,7 +227,13 @@ The type and requirements of device calibration is dependent on the device conne
                 public void onColorCapture(@NonNull ColorInstrument colorInstrument, @NonNull ColorScan scan) {
                     colorInstrument.setCalibrationScans(
                             Arrays.asList(scan),
-                            (peripheral, isSuccess) -> Toast.makeText(CalibrationActivity.this, "Calibration Result is " + isSuccess, Toast.LENGTH_SHORT).show(), null);
+                            (peripheral, ex) -> {
+                                if (ex == null) {
+                                    Toast.makeText(CalibrationActivity.this, "Calibration is successful", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    this.handleScanError(ex);
+                                }
+                            });
                 }
     
                 @Override
@@ -245,7 +251,13 @@ The type and requirements of device calibration is dependent on the device conne
             public void onColorCapture(@NonNull ColorInstrument colorInstrument, @NonNull ColorScan scan) {
                 colorInstrument.setCalibrationScans(
                         Arrays.asList(scan),
-                        (peripheral, isSuccess) -> Toast.makeText(CalibrationActivity.this, "Calibration Result is " + isSuccess, Toast.LENGTH_SHORT).show(), null);
+                         (peripheral, ex) -> {
+                            if (ex == null) {
+                                Toast.makeText(CalibrationActivity.this, "Calibration is successful", Toast.LENGTH_SHORT).show();
+                            } else {
+                                this.handleScanError(ex);
+                            }
+                        });
             }
 
             @Override
@@ -255,7 +267,7 @@ The type and requirements of device calibration is dependent on the device conne
     }
     ```
     
- View CalibrationActivity.java for more complete usage of setCalibrationScans.
+ [View CalibrationActivity.java](https://bitbucket.org/variablecolor/android-variable-color-sdk-examples/src/master/src/main/java/com/variable/example/CalibrationActivity.java) for more complete usage of setCalibrationScans.
 
  Any device's calibration status can be checked by doing the following:
  ```java

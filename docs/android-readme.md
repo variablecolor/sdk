@@ -1,5 +1,5 @@
 # Variable SDK Demo
-This demo project shows basic usage of the VariableSDK framework (v12.0.0).
+This demo project shows basic usage of the VariableSDK framework (v12.1.0).
 
 The sdk is broken down into 2 major parts:
 
@@ -45,7 +45,7 @@ Inside of your project, add our public repository to your build's repositories. 
 Now, add the `variable-color-framework` dependency to your project.
 ```gradle
 dependency {
-    implementation 'com.variable:variable-color-framework:12.0.0'
+    implementation 'com.variable:variable-color-framework:12.1.0'
 }
 ```
 
@@ -53,6 +53,13 @@ dependency {
 
 
 #### Release Notes
+#### 12.1.0
+ - Bug Fix: Returns the battery voltage down to 0.01 for the device on a Color Scan objects
+ - Bug Fix: Serializes all the batched labs on a Color Scan object (toMap function)
+ - Enhancement: Supports new Color Muse 3 and Spectro 3 hardware.
+ - Critical Bug Fix: Writes internal sdk values for CMGEN2 to the device in the proper endianness
+ - Enhancement: For Color Instruments that support verification, (canComputeVerification), can now perform verification scans independent of calibration.
+
 #### 12.0.0
  - Versioning brought up to be in line with iOS major version
  - Adds support for more colorimeters and Spectrophotometers.

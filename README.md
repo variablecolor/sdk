@@ -19,7 +19,9 @@ The downloads include the SDK along with source code demonstrating basic use.
 Documentation can be found in the source code of the SDKs.
 
 ## Android
+The android sdk comes with a complete public repository for the demo app.
 
+- [View Android Source Code & Changes](https://bitbucket.org/variablecolor/android-variable-color-sdk-examples)
 - [Android readme](docs/android-readme.md)
 - [Android quickstart](docs/android-quickstart.md)
 
