@@ -1,5 +1,15 @@
 # Variable SDK Demo
-This demo project shows basic usage of the VariableSDK framework (v12.1.0).
+## 🚀 Important SDK Update
+
+v12.2.2 brings compliance with Google's optimization mandate requiring **16KB page size support**.
+
+### ⚠️ A Note for Your Users:
+
+To complete the update process, any device connected to your application after this SDK upgrade will require a **one-time internet connection**. This treats them as a first-time connection, ensuring the security mandate is fully implemented across your user base.
+
+
+### SDK Structure
+This demo project shows basic usage of the VariableSDK framework (v12.2.4).
 
 The sdk is broken down into 2 major parts:
 
@@ -45,7 +55,7 @@ Inside of your project, add our public repository to your build's repositories. 
 Now, add the `variable-color-framework` dependency to your project.
 ```gradle
 dependency {
-    implementation 'com.variable:variable-color-framework:12.1.0'
+    implementation 'com.variable:variable-color-framework:12.2.4'
 }
 ```
 
@@ -53,6 +63,18 @@ dependency {
 
 
 #### Release Notes
+### 12.2.4
+ - Fixes download task finishing more than once, and invoking the callback multiple times.
+ - For performance, during the download phase, the realm file will no longer compact to reduce space usage. This reduces memory pressure during the product download task.
+
+### 12.2.3
+ - Fixes edge case with serializing specific Color Sensor scans.
+#### 12.2.2
+ - 16KB Page Support
+ - Minimum SDK version bumped up to api level 24
+ - Support for specifying service specific urls.
+ - Upon post upgrade, devices next connection will require a one time internet connection.
+
 #### 12.1.0
  - Bug Fix: Returns the battery voltage down to 0.01 for the device on a Color Scan objects
  - Bug Fix: Serializes all the batched labs on a Color Scan object (toMap function)
