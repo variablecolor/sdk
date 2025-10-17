@@ -34,11 +34,11 @@ On May 8th, 2025, Google announced a new requirement:
 
 You can read the full announcement here: [https://android-developers.googleblog.com/2025/05/prepare-play-apps-for-devices-with-16kb-page-size.html](https://android-developers.googleblog.com/2025/05/prepare-play-apps-for-devices-with-16kb-page-size.html)
 
-The Variable Color Android SDK will support this 16 KB page size requirement as of version 12.2, which is scheduled for release on Oct 17, 2025. Versions prior to 12.2 do not support 16 KB page size.
+As of version 12.2.4, the Variable Color Android SDK supports this 16 KB page size requirement.
 
-Therefore, any apps submitted to the Google Play Store starting Nov 1, 2025 must use at least version 12.2 of the Variable Color Android SDK.
+Any apps submitted to the Google Play Store starting Nov 1, 2025 must use at least version 12.2.4 of the Variable Color Android SDK.
 
-Please note that the minimum Android SDK version has been increased from 21 to 24 in version 12.2 of the Variable Color Android SDK.
+Please note that the minimum Android SDK version has been increased from 21 to 24 in version 12.2.4 of the Variable Color Android SDK.
 
 NOTE: Google has an option to request an extension for 16 KB page size compliance. If granted, you will not need to comply with the 16 KB page size requirement until May 31, 2026. This extension can be requested through the Google Play Store Console.
 
